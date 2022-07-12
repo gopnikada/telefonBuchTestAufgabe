@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Contact from "./Entities/Contact";
 import ContactComp from "./Components/ContactComp/ContactComp";
+import TextField from '@mui/material/TextField';
 import contactsJson from "./data/telefonbuch.json";
 
 
@@ -12,7 +13,11 @@ const [query, setQuery] = useState("")
 
   return (
     <div className="App">
-     <input placeholder="Telefonbuch durchsuchen.." onChange={event => setQuery(event.target.value)}/>
+        <TextField
+            id="outlined-basic"
+            label="Telefonbuch durchsuchen..."
+            variant="outlined"
+        onChange={event=>setQuery(event.target.value)}/>
         {contactsJson.filter(contact=>{
             if (query === '') {
                 return contact;
@@ -22,12 +27,32 @@ const [query, setQuery] = useState("")
         })
             .map((contact, index)=>(
             <div className="box">
-                <p>{contact.name}</p>
+                <Highlighted text={contact.name} highlight={query}></Highlighted>
                 <p>{contact.phone}</p>
             </div>
         ))}
     </div>
   );
 }
+
+const Highlighted = ({ text = "", highlight = "" }) => {
+    if (!highlight.trim()) {
+        return <span>{text}</span>;
+    }
+    const regex = new RegExp(`(${highlight})`, "gi");
+    const parts = text.split(regex);
+
+    return (
+        <span>
+      {parts.filter(String).map((part, i) => {
+          return regex.test(part) ? (
+              <mark key={i}>{part}</mark>
+          ) : (
+              <span key={i}>{part}</span>
+          );
+      })}
+    </span>
+    );
+};
 
 export default App;
