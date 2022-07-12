@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Contact from "./Entities/Contact";
-import ContactComp from "./Components/ContactComp/ContactComp";
 import TextField from '@mui/material/TextField';
 import contactsJson from "./data/telefonbuch.json";
+import CardComp from "./Components/ContactComp/CardComp";
 
 
 function App() {
@@ -25,34 +25,12 @@ const [query, setQuery] = useState("")
                 return contact;
             }
         })
-            .map((contact, index)=>(
-            <div className="box">
-                <Highlighted text={contact.name} highlight={query}></Highlighted>
-                <p>{contact.phone}</p>
-            </div>
+            .map((contact)=>(
+                <CardComp className="box" name={contact.name} phone={contact.phone} query={query}></CardComp>
         ))}
     </div>
   );
 }
 
-const Highlighted = ({ text = "", highlight = "" }) => {
-    if (!highlight.trim()) {
-        return <span>{text}</span>;
-    }
-    const regex = new RegExp(`(${highlight})`, "gi");
-    const parts = text.split(regex);
-
-    return (
-        <span>
-      {parts.filter(String).map((part, i) => {
-          return regex.test(part) ? (
-              <mark key={i}>{part}</mark>
-          ) : (
-              <span key={i}>{part}</span>
-          );
-      })}
-    </span>
-    );
-};
 
 export default App;
