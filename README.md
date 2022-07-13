@@ -4,7 +4,7 @@ Within the InputField Data Can be dynamically filtered and highlighted(picreal)
 
 
 
-### Starten:
+### Start:
 
 ### `npm start` from package.json - client
 ### `node server` in server folder
