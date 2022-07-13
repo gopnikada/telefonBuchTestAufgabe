@@ -6,41 +6,49 @@ import CardComp from "./Components/ContactComp/CardComp";
 
 
 function App() {
-const [query, setQuery] = useState("")
-const [contacts, setContacts] = useState([])
- const [error, setError] = useState(null);
- const [isLoaded, setIsLoaded] = useState(false);
- const [items, setItems] = useState("");
+    const [query, setQuery] = useState("")
+    const [contacts, setContacts] = useState([])
 
- useEffect(() => {
-  fetch("https://api.npms.io/v2/search?q=react", {mode: 'no-cors'})
-      .then(res => res.json())
-      .then(
-          (result) => {
-           setIsLoaded(true);
-           setItems(result);
-          },
-          // Примечание: важно обрабатывать ошибки именно здесь, а не в блоке catch(),
-          // чтобы не перехватывать исключения из ошибок в самих компонентах.
-          (error) => {
-           setIsLoaded(true);
-           setError(error);
-          }
-      )
- }, [])
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
 
-    if (error) {
-        return <div>Ошибка:{error} </div>;
-    } else if (!isLoaded) {
-        return <div>Загрузка...</div>;
-    } else {
-        return (
-           <div>
-               {items}
-           </div>
-        );
-    }
+
+    useEffect(() => {
+        fetch(`http://localhost:3030/api/getcontacts`)
+            .then((res) => res.json())
+            .then(actualData => {
+                setData(actualData);
+                setError(null);
+            })
+            .catch((err) => {
+                setError(err.message);
+                setData([]);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, []);
+
+    return (
+        <div className="App">
+            <h1>API Posts</h1>
+            {loading && <div>A moment please...</div>}
+            {error && (
+                <div>{`There is a problem fetching the post data - ${error}`}</div>
+            )}
+            <ul>
+                {data &&
+                    data.map(({ name }) => (
+                        <li >
+                            <h3>{name}</h3>
+                        </li>
+                    ))}
+            </ul>
+        </div>
+    );
+
 //  return (
 //
 //
@@ -62,7 +70,7 @@ const [contacts, setContacts] = useState([])
     //             <CardComp className="box" name={contact.name} phone={contact.phone} query={query}></CardComp>
     //     ))}
     // </div>
-  //);
+    //);
 }
 
 
